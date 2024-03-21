@@ -6,11 +6,11 @@ const App = () => {
   const [todo, setTodo] = useState({
     description: '',
   });
-  const [todoList, setTodoList] = useState([]);
-  const [error, setError] = useState('');
+  const [todoList, setTodoList] = useState([]); //useState should be initialized empty (no inner brackets)
+  const [error, setError] = useState(''); //same as above, no need for '' within parentheses
 
   const fetchTodos = async () => {
-    try {
+    try { //is there a way to perform this function without using try/catch? An if statement may be more optimal.
       const res = await getTodos();
       setTodoList(res.data);
     } catch (err) {
@@ -21,12 +21,13 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    //const data for new FormData is missing from this section
     try {
       const newTodo = await createTodo({
-        description: todo.description,
-        created_at: new Date().toISOString(),
+        description: todo.description, //needs to be wrapped around a call to data.set
+        created_at: new Date().toISOString(), //needs to be wrapped around a call to data.set
       });
-      todo(newTodo);
+      todo(newTodo); //might be unnecessary
       setTodo({ description: '' });
       fetchTodos();
     } catch (err) {
@@ -35,7 +36,7 @@ const App = () => {
   };
 
   const handleDelete = async (id) => {
-    setError('');
+    setError(''); //not needed
     try {
       await removeTodo(id);
       fetchTodos();
@@ -46,7 +47,7 @@ const App = () => {
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, []); 
 
   return (
     <div className="App">
@@ -62,7 +63,7 @@ const App = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <ol>
-        {todoList && todoList.map((todoItem) => (
+        {todoList && todoList.map((todoItem) => ( //it's better to write this as an if (?) statement
           <li
             key={todoItem.todo_id}
             onClick={() => {
