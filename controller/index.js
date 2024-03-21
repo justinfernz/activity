@@ -3,8 +3,8 @@ const formidable = require('formidable');
 const { create, get,removeTodo } = require('../model/todo');
 
 exports.create = (req,res) =>{
-const form = new formidable.IncomingForm
-console.log(form);
+const form = new formidable.IncomingForm //this should be a call to IncomingForm() 
+console.log(form); //I assume this is for testing purposes
 
 form.keepExtensions = true;
   form.parse(req, async (err, fields) => {
