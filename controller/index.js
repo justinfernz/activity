@@ -1,13 +1,15 @@
 const formidable = require('formidable');
 
-const { create, get, removeTodo } = require('../model/todo');
+const { create, get,removeTodo } = require('../model/todo');
 
 exports.create = (req,res) =>{
 const form = new formidable.IncomingForm
+console.log(form);
 
 form.keepExtensions = true;
   form.parse(req, async (err, fields) => {
     const { description } = fields;
+    console.log(description);
     // check to see if the description field exists in the form
     // if description doesn't exist, send error
     if (!fields.description) {

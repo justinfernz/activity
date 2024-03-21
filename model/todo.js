@@ -1,6 +1,6 @@
-const pool = require('./database');
+import pool from './database';
 
-const create = async (description) => {
+export const create = async (description) => {
     try {
         const result = await pool.query('INSERT INTO todo (description) VALUES ($1) RETURNING *', [
             description,
@@ -11,7 +11,7 @@ const create = async (description) => {
     }
 };
 
-const get = async () => {
+export const get = async () => {
     try {
         const result = await pool.query('SELECT * FROM todo');
         return result.rows; // Assuming you want to return all rows
@@ -20,17 +20,10 @@ const get = async () => {
     }
 };
 
-const removeTodo = async (id) => {
+export const removeTodo = async (id) => {
     try {
         await pool.query('DELETE FROM todo WHERE todo_id = $1', [id]);
     } catch (error) {
         throw error;
     }
 };
-
-module.exports = {
-    removeTodo,
-    get,
-    create,
-};
-

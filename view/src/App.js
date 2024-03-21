@@ -6,50 +6,48 @@ const App = () => {
   const [todo, setTodo] = useState({
     description: '',
   });
-  const [todoList, setTodoList] = useState();
-  const [error, setError] = useState();
-
+  const [todoList, setTodoList] = useState([]);
+  const [error, setError] = useState('');
 
   const fetchTodos = async () => {
-    const res = await getTodos();
-    if (res.error) {
-      setError(res.error.name);
+    try {
+      const res = await getTodos();
+      setTodoList(res.data);
+    } catch (err) {
+      setError(err.message);
     }
-    setTodoList(res.data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError();
-    const data = new FormData(e.currentTarget);
+    setError('');
     try {
-      data.set('description', todo.description);
-      data.set('created_at', `${new Date().toISOString()}`);
-      const newTodo = await createTodo(data);
-      if (newTodo.error) {
-        setError(newTodo.error);
-      }
+      const newTodo = await createTodo({
+        description: todo.description,
+        created_at: new Date().toISOString(),
+      });
+      todo(newTodo);
       setTodo({ description: '' });
       fetchTodos();
     } catch (err) {
-      setError(err);
+      setError(err.message);
     }
   };
 
   const handleDelete = async (id) => {
+    setError('');
     try {
       await removeTodo(id);
       fetchTodos();
     } catch (err) {
-      setError(err);
+      setError(err.message);
     }
   };
-  
-
 
   useEffect(() => {
-    // Initialize todoList
+    fetchTodos();
   }, []);
+
   return (
     <div className="App">
       <h1>To-Do List</h1>
@@ -57,16 +55,14 @@ const App = () => {
         <input
           type="text"
           value={todo.description}
-          onChange={(event) =>
-            setTodo({ ...todo, description: event.target.value })
-          }
-        ></input>
+          onChange={(event) => setTodo({ ...todo, description: event.target.value })}
+        />
         <button type="submit">Add Todo</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <ol>
-        {todoList?.map((todoItem) => (
+        {todoList && todoList.map((todoItem) => (
           <li
             key={todoItem.todo_id}
             onClick={() => {
